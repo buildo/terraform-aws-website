@@ -1,21 +1,3 @@
-variable "domain" {
-  type = "string"
-}
-
-variable "hosted_zone_id" {
-  type = "string"
-}
-
-variable "enable_health_check" {
-  type    = "string"
-  default = false
-}
-
-variable "health_check_alarm_sns_topics" {
-  type    = "list"
-  default = []
-}
-
 locals {
   www_domain = "www.${var.domain}"
 
