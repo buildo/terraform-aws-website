@@ -48,5 +48,11 @@ module "website" {
   source = "/path/to/modules/website"        // e.g. `../../modules/website`
   domain = "mysite.com"                      // no www here
   hosted_zone_id = "<your hosted zone id>"
+
+  # optional: enable health check on www.mysite.com
+  enable_health_check = true
+  health_check_alarm_sns_topics = [
+    "<arn of a topic to notify for health check alarms>"
+  ]
 }
 ```
