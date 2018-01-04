@@ -129,6 +129,7 @@ resource "aws_cloudwatch_metric_alarm" "test-ganaveneto" {
   alarm_description   = "This metric monitors the health of the endpoint"
   ok_actions          = "${var.health_check_alarm_sns_topics}"
   alarm_actions       = "${var.health_check_alarm_sns_topics}"
+  treat_missing_data  = "breaching"
 
   dimensions {
     HealthCheckId = "${aws_route53_health_check.health_check.id}"
