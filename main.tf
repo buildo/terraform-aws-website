@@ -6,9 +6,9 @@ locals {
     "${local.www_domain}",
   ]
 
-  website_domains = [
-    "${aws_s3_bucket.redirect.website_domain}",
-    "${aws_s3_bucket.main.website_domain}",
+  website_endpoints = [
+    "${aws_s3_bucket.redirect.website_endpoint}",
+    "${aws_s3_bucket.main.website_endpoint}",
   ]
 }
 
@@ -57,7 +57,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   is_ipv6_enabled     = true
 
   origin {
-    domain_name = "${element(local.website_domains, count.index)}"
+    domain_name = "${element(local.website_endpoints, count.index)}"
     origin_id   = "S3-${element(local.domains, count.index)}"
 
     custom_origin_config {
