@@ -52,7 +52,7 @@ data "aws_acm_certificate" "ssl" {
 resource "aws_cloudfront_distribution" "cdn" {
   count               = "${length(local.domains)}"
   enabled             = true
-  default_root_object = "index.html"
+  default_root_object = "${element(local.domains, count.index) == local.www_domain ? "index.html" : null}"
   aliases             = ["${element(local.domains, count.index)}"]
   is_ipv6_enabled     = true
 
