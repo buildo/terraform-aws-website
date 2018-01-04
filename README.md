@@ -44,10 +44,15 @@ provider "aws" {
   region = "us-east-1"
 }
 
+// This hosted zone must already exist
+data "aws_route53_zone" "mysite-com" {
+  name = "mysite.com."
+}
+
 module "website" {
-  source = "/path/to/modules/website"        // e.g. `../../modules/website`
+  source = "buildo/website/aws"
   domain = "mysite.com"                      // no www here
-  hosted_zone_id = "<your hosted zone id>"
+  hosted_zone_id = "${data.aws_route53_zone.mysite-com.zone_id}"
 
   # optional: enable health check on www.mysite.com
   enable_health_check = true
