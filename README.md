@@ -21,7 +21,7 @@ Follow this instructions:
   - 🚨 **This is CRUCIAL, as AWS requires certificates for CloudFront to be issued in this region**
 - Click on "Request a certificate"
 - Enter as a primary domain name the domain you want *with www*, for example: `www.buildo.io`
-- Enter the naked domain as annotational domain name, for example `buildo.io`
+- Enter the naked domain as an additional domain name, for example `buildo.io`
 
 You should be in this situation:
 
