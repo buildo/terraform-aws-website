@@ -117,6 +117,7 @@ resource "aws_route53_health_check" "health_check" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "health_check_alarm" {
+  provider            = "aws.us-east-1"
   count               = "${var.enable_health_check ? 1 : 0}"
   alarm_name          = "${local.www_domain}-health-check"
   comparison_operator = "LessThanThreshold"
