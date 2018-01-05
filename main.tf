@@ -105,7 +105,7 @@ resource "aws_route53_health_check" "health_check" {
   depends_on        = ["aws_route53_record.A"]
   count             = "${var.enable_health_check ? 1 : 0}"
   fqdn              = "${local.www_domain}"
-  port              = 443
+  port              = 80
   type              = "HTTP"
   resource_path     = "/"
   failure_threshold = "3"
@@ -116,7 +116,7 @@ resource "aws_route53_health_check" "health_check" {
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "test-ganaveneto" {
+resource "aws_cloudwatch_metric_alarm" "health_check_alarm" {
   count               = "${var.enable_health_check ? 1 : 0}"
   alarm_name          = "${local.www_domain}-health-check"
   comparison_operator = "LessThanThreshold"
