@@ -1,3 +1,8 @@
+provider "aws" {
+  alias  = "us-east-1"
+  region = "us-east-1"
+}
+
 locals {
   www_domain = "www.${var.domain}"
 
