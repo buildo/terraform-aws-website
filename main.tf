@@ -101,16 +101,20 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 }
 
+locals {
+  cloudwatch_alarm_name = "${local.www_domain}-health-check"
+}
+
 resource "aws_route53_health_check" "health_check" {
-  depends_on        = ["aws_route53_record.A"]
-  count             = "${var.enable_health_check ? 1 : 0}"
-  fqdn              = "${local.www_domain}"
-  port              = 80
-  type              = "HTTP"
-  resource_path     = "/"
-  failure_threshold = "3"
-  request_interval  = "30"
-  cloudwatch_alarm_name = "${aws_cloudwatch_metric_alarm.health_check_alarm.alarm_name}"
+  depends_on            = ["aws_route53_record.A"]
+  count                 = "${var.enable_health_check ? 1 : 0}"
+  fqdn                  = "${local.www_domain}"
+  port                  = 80
+  type                  = "HTTP"
+  resource_path         = "/"
+  failure_threshold     = "3"
+  request_interval      = "30"
+  cloudwatch_alarm_name = "${local.cloudwatch_alarm_name}"
 
   tags = {
     Name = "${local.www_domain}"
@@ -119,7 +123,7 @@ resource "aws_route53_health_check" "health_check" {
 
 resource "aws_cloudwatch_metric_alarm" "health_check_alarm" {
   count               = "${var.enable_health_check ? 1 : 0}"
-  alarm_name          = "${local.www_domain}-health-check"
+  alarm_name          = "${local.cloudwatch_alarm_name}"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "1"
   metric_name         = "HealthCheckStatus"
