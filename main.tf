@@ -17,6 +17,10 @@ locals {
   ]
 }
 
+data "aws_route53_zone" "zone" {
+  name = "${var.domain}"
+}
+
 resource "aws_s3_bucket" "main" {
   bucket = "${local.www_domain}"
 
@@ -36,7 +40,7 @@ resource "aws_s3_bucket" "redirect" {
 
 resource "aws_route53_record" "A" {
   count   = "${length(local.domains)}"
-  zone_id = "${var.hosted_zone_id}"
+  zone_id = "${data.aws_route53_zone.zone.zone_id}"
   name    = "${element(local.domains, count.index)}"
   type    = "A"
 

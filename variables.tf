@@ -3,11 +3,6 @@ variable "domain" {
   description = "The domain where to host the site. This must be the naked domain, e.g. `example.com`"
 }
 
-variable "hosted_zone_id" {
-  type        = "string"
-  description = "The id of the Route53 Hosted Zone where to create the DNS records"
-}
-
 variable "enable_health_check" {
   type        = "string"
   default     = false
