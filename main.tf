@@ -94,6 +94,7 @@ resource "aws_cloudfront_distribution" "cdn" {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "S3-${element(local.domains, count.index)}"
+    compress         = "${var.enable_gzip}"
 
     forwarded_values {
       query_string = false
