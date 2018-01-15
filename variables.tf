@@ -14,3 +14,9 @@ variable "health_check_alarm_sns_topics" {
   default     = []
   description = "A list of SNS topics to notify whenever the health check fails or comes back to normal"
 }
+
+variable "enable_gzip" {
+  type        = "string"
+  default     = true
+  description = "Whether to make CloudFront automatically compress content for web requests that include `Accept-Encoding: gzip` in the request header"
+}
