@@ -109,6 +109,20 @@ resource "aws_cloudfront_distribution" "cdn" {
     default_ttl            = 86400
     max_ttl                = 31536000
   }
+
+  custom_error_response {
+    error_code = 403
+    response_code = 200
+    response_page_path = "/index.html"
+    error_caching_min_ttl = 300
+  }
+
+  custom_error_response {
+    error_code = 404
+    response_code = 200
+    response_page_path = "/index.html"
+    error_caching_min_ttl = 300
+  }
 }
 
 resource "aws_route53_health_check" "health_check" {
