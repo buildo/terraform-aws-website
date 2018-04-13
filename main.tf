@@ -11,7 +11,7 @@ locals {
     "${local.www_domain}",
   ]
 
-  website_endpoints = [
+  bucket_domain_names = [
     "${aws_s3_bucket.redirect.bucket_domain_name}",
     "${aws_s3_bucket.main.bucket_domain_name}",
   ]
@@ -78,10 +78,9 @@ resource "aws_cloudfront_distribution" "cdn" {
   default_root_object = "${element(local.domains, count.index) == local.www_domain ? "index.html" : ""}"
   aliases             = ["${element(local.domains, count.index)}"]
   is_ipv6_enabled     = true
-  http_version        = "http2"
 
   origin {
-    domain_name = "${element(local.website_endpoints, count.index)}"
+    domain_name = "${element(local.bucket_domain_names, count.index)}"
     origin_id   = "S3-${element(local.domains, count.index)}"
 
     s3_origin_config {
