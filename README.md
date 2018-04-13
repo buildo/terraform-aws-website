@@ -39,15 +39,9 @@ provider "aws" {
   region = "eu-west-1" // The region for the S3 buckets and the CloudFront distribution
 }
 
-// This hosted zone must already exist
-data "aws_route53_zone" "mysite-com" {
-  name = "mysite.com."
-}
-
 module "website" {
   source = "buildo/website/aws"
   domain = "mysite.com" // no www here
-  hosted_zone_id = "${data.aws_route53_zone.mysite-com.zone_id}"
 
   # optional: enable health check on www.mysite.com
   enable_health_check = true
