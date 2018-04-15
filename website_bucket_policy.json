@@ -1,6 +1,6 @@
 {
   "Version": "2008-10-17",
-  "Id": "PolicyForCloudFrontPrivateContent",
+  "Id": "PolicyForCloudFrontPrivateContent-${bucket}",
   "Statement": [
     {
       "Sid": "1",
