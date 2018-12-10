@@ -61,6 +61,19 @@ resource "aws_route53_record" "A" {
   }
 }
 
+resource "aws_route53_record" "AAAA" {
+  count   = "${length(local.domains)}"
+  zone_id = "${data.aws_route53_zone.zone.zone_id}"
+  name    = "${element(local.domains, count.index)}"
+  type    = "AAAA"
+
+  alias {
+    name                   = "${element(aws_cloudfront_distribution.cdn.*.domain_name, count.index)}"
+    zone_id                = "${element(aws_cloudfront_distribution.cdn.*.hosted_zone_id, count.index)}"
+    evaluate_target_health = false
+  }
+}
+
 data "aws_acm_certificate" "ssl" {
   count    = "${length(local.domains)}"
   provider = "aws.us-east-1"            // this is an AWS requirement
