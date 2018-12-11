@@ -30,6 +30,15 @@ data "template_file" "bucket_policy" {
   }
 }
 
+data "template_file" "redirect_bucket_policy" {
+  template = "${file("${path.module}/website_bucket_policy.json")}"
+
+  vars {
+    bucket = "${var.domain}"
+    iam_arn= "${aws_cloudfront_origin_access_identity.orig_access_ident.iam_arn}"
+  }
+}
+
 resource "aws_s3_bucket" "main" {
   bucket = "${local.www_domain}"
   policy   = "${data.template_file.bucket_policy.rendered}"
@@ -42,6 +51,7 @@ resource "aws_s3_bucket" "main" {
 
 resource "aws_s3_bucket" "redirect" {
   bucket = "${var.domain}"
+  policy   = "${data.template_file.redirect_bucket_policy.rendered}"
 
   website = {
     redirect_all_requests_to = "${aws_s3_bucket.main.id}"
