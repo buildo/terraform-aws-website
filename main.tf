@@ -11,9 +11,9 @@ locals {
     "${local.www_domain}",
   ]
 
-  bucket_domain_names = [
-    "${aws_s3_bucket.redirect.bucket_domain_name}",
-    "${aws_s3_bucket.main.bucket_domain_name}",
+  website_endpoints = [
+    "${aws_s3_bucket.redirect.website_endpoint}",
+    "${aws_s3_bucket.main.website_endpoint}",
   ]
 }
 
@@ -21,18 +21,8 @@ data "aws_route53_zone" "zone" {
   name = "${var.domain}"
 }
 
-data "template_file" "bucket_policy" {
-  template = "${file("${path.module}/website_bucket_policy.json")}"
-
-  vars {
-    bucket = "${local.www_domain}"
-    iam_arn= "${aws_cloudfront_origin_access_identity.orig_access_ident.iam_arn}"
-  }
-}
-
 resource "aws_s3_bucket" "main" {
   bucket = "${local.www_domain}"
-  policy   = "${data.template_file.bucket_policy.rendered}"
 
   website = {
     index_document = "index.html"
@@ -81,10 +71,6 @@ data "aws_acm_certificate" "ssl" {
   statuses = ["ISSUED"]
 }
 
-resource "aws_cloudfront_origin_access_identity" "orig_access_ident" {
-  comment = "CloudFront Origin Access Identity to access S3 Bucket ${local.www_domain}"
-}
-
 resource "aws_cloudfront_distribution" "cdn" {
   count               = "${length(local.domains)}"
   enabled             = true
@@ -93,11 +79,15 @@ resource "aws_cloudfront_distribution" "cdn" {
   is_ipv6_enabled     = true
 
   origin {
-    domain_name = "${element(local.bucket_domain_names, count.index)}"
+    domain_name = "${element(local.website_endpoints, count.index)}"
     origin_id   = "S3-${element(local.domains, count.index)}"
 
-    s3_origin_config {
-      origin_access_identity = "${aws_cloudfront_origin_access_identity.orig_access_ident.cloudfront_access_identity_path}"
+    custom_origin_config {
+      http_port                = "80"
+      https_port               = "443"
+      origin_keepalive_timeout = 5
+      origin_protocol_policy   = "http-only"
+      origin_ssl_protocols     = ["TLSv1", "TLSv1.1", "TLSv1.2"]
     }
   }
 
