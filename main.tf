@@ -24,7 +24,7 @@ data "aws_route53_zone" "zone" {
 resource "aws_s3_bucket" "main" {
   bucket = "${local.www_domain}"
 
-  website = {
+  website {
     index_document = "index.html"
     error_document = "index.html"
   }
@@ -33,7 +33,7 @@ resource "aws_s3_bucket" "main" {
 resource "aws_s3_bucket" "redirect" {
   bucket = "${var.domain}"
 
-  website = {
+  website {
     redirect_all_requests_to = "${aws_s3_bucket.main.id}"
   }
 }
@@ -169,7 +169,7 @@ resource "aws_cloudwatch_metric_alarm" "health_check_alarm" {
   alarm_actions       = "${var.health_check_alarm_sns_topics}"
   treat_missing_data  = "breaching"
 
-  dimensions {
-    HealthCheckId = "${aws_route53_health_check.health_check.id}"
+  dimensions = {
+    HealthCheckId = "${aws_route53_health_check.health_check.0.id}"
   }
 }
